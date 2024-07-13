@@ -6,11 +6,13 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 
 
 
-const generateAccessAndRefereshToken = async (userId) => {
+const generateAccessAndRefreshToken = async (userId) => {
     try {
         const user = await User.findById(userId)
-        const accessToken = user.generateAccessToken()
-        const refreshToken = user.generateRefreshToken()
+        const accessToken = await user.generateAccessToken()
+        // console.log(accessToken)
+        const refreshToken = await user.generateRefreshToken()
+        // console.log(refreshToken)
 
         //saving refresh token in database
         user.refreshToken = refreshToken
@@ -19,9 +21,11 @@ const generateAccessAndRefereshToken = async (userId) => {
         return { accessToken, refreshToken }
 
     } catch (error) {
-        throw new ApiError(500, "Something went wrong while generating access and referesh token")
+        throw new ApiError(500, "Something went wrong while generating access and refresh token")
     }
 }
+
+
 
 const registerUser = asyncHandler(async (req, res) => {
     // get userDetails from frontend
@@ -114,7 +118,8 @@ const loginUser = asyncHandler(async (req, res) => {
     //  send cookie
 
     const { username, email, password } = req.body
-    console.log(email);
+    // console.log(email);
+
 
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")
@@ -129,15 +134,15 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password)
-
+    
     if (!isPasswordValid) {
         throw new ApiError(401, "Incorrect Password")
     }
 
     //refreshToken
-    const { accessToken, refreshToken } = await generateAccessAndRefereshToken(user._id)
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(user._id)
 
-    const loggedInUser = await User.findById(user_id)
+    const loggedInUser = await User.findById(user._id)
         .select("-password -refreshToken")
 
     //cookie
@@ -164,6 +169,7 @@ const loginUser = asyncHandler(async (req, res) => {
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
+    
     await User.findByIdAndUpdate(
         req.user._id,
         {
