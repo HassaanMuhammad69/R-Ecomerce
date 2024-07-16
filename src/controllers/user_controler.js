@@ -26,7 +26,6 @@ const generateAccessAndRefreshToken = async (userId) => {
     }
 }
 
-
 const registerUser = asyncHandler(async (req, res) => {
     // get userDetails from frontend
     // validation- not empty
@@ -265,7 +264,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
     return res
         .status(200)
-        .json(200, req.user, "Current user fetcehd succesfully")
+        .json(new ApiResponse(200, req.user, "Current user fetcehd succesfully"))
 })
 
 const updateUserDetails = asyncHandler(async (req, res) => {
@@ -288,7 +287,7 @@ const updateUserDetails = asyncHandler(async (req, res) => {
 
     return res
         .status(200)
-        .json(200, user, "Account details updated successfully")
+        .json(new ApiResponse(200, user, "Account details updated successfully"))
 
 })
 
