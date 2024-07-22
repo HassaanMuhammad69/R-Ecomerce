@@ -24,19 +24,14 @@ const userSchema = new Schema({
         trim: true,
         index: true
     },
-    avatar: {
+    phoneNumber:{
         type: String,
         required: true
     },
-    coverImage: {
+    address:{
         type: String,
+        required: true
     },
-    watchHistory: [
-        {
-            type: Schema.Types.ObjectId,
-            ref: "Video"
-        }
-    ],
     password: {
         type: String,
         required: [true, "Password is required"]
